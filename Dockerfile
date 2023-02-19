@@ -3,8 +3,6 @@ FROM apache/airflow:2.3.0-python3.8
 
 USER root
 
-COPY .env /usr/local/airflow/
-
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     curl \
@@ -14,8 +12,6 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 USER airflow
-
-ENV AIRFLOW_HOME=/opt/airflow
 
 RUN pip install apache-airflow-providers-snowflake
 
@@ -31,4 +27,5 @@ RUN airflow users create \
     --firstname dieguito \
     --lastname maradona
 
-CMD ["webserver"]
+CMD ["bash", "-c", "airflow scheduler & airflow webserver"]
+

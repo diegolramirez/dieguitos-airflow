@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 from airflow import DAG
+from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python_operator import PythonOperator
 
 default_args = {
@@ -22,4 +23,10 @@ def print_hello():
 
 
 with dag:
-    t1 = PythonOperator(task_id="print_hello", python_callable=print_hello, dag=dag)
+    start = DummyOperator(task_id="start")
+    hello_world = PythonOperator(
+        task_id="print_hello", python_callable=print_hello, dag=dag
+    )
+    finish = DummyOperator(task_id="finish")
+
+    start >> hello_world >> finish
